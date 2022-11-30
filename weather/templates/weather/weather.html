@@ -27,7 +27,7 @@
                         {% csrf_token %}
                         <div class="field has-addons">
                             <div class="control is-expanded">
-                                {{form.name}}
+                                {{ form.as_p }}
                             </div>
                             <div class="control">
                                 <button type="submit"  class="button is-info">
@@ -35,9 +35,6 @@
                                 </button>
                             </div>
                         </div>
-                        {% if message %}
-                            <div class="notification {{ message_class }}">{{ message }}</div>
-                        {% endif %}
                     </form>
                 </div>
             </div>
