@@ -13,7 +13,7 @@ class CityWeatherData:
     def __init__(self, city_name):
         self.city_name = city_name
         self.api_key = self.get_api_key()
-        self.url = f"https://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={self.api_key}"
+        self.url = f"https://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={self.api_key}&units=metric"
 
     def get_api_key(self):
         with open("secret.json", "r") as secret_file:
