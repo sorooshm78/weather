@@ -1,4 +1,5 @@
 import requests
+from requests.exceptions import ConnectionError
 import json
 
 from django.views.generic import CreateView, DeleteView
@@ -22,11 +23,11 @@ class CityWeatherData:
     def city_exist(self):
         try:
             response = requests.get(self.url)
-        except BaseException:
-            raise ValueError("Connection Error")
+        except ConnectionError:
+            raise Exception("Connection Error")
         else:
             if response.status_code != 200:
-                raise ValueError("City Not Exist")
+                raise Exception("City Not Exist")
 
     def get_json_data(self):
         response = requests.get(self.url)
@@ -41,7 +42,7 @@ class CityWeatherData:
                 "description": data["weather"][0]["description"],
                 "icon": data["weather"][0]["icon"],
             }
-        except BaseException:
+        except ConnectionError:
             err = "Connection Error"
             return {
                 "city": self.city_name,
@@ -74,7 +75,7 @@ class ListCreateCityView(CreateView):
         try:
             CityWeatherData(city_name).city_exist()
             return super().form_valid(form)
-        except ValueError as err:
+        except Exception as err:
             form.add_error("name", err)
             return self.form_invalid(form)
 
