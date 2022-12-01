@@ -4,6 +4,7 @@ import json
 
 from django.views.generic import CreateView, DeleteView
 from django.urls import reverse
+from django.conf import settings
 
 from .models import City
 from .forms import CityModelForm
@@ -12,13 +13,8 @@ from .forms import CityModelForm
 class CityWeatherData:
     def __init__(self, city_name):
         self.city_name = city_name
-        self.api_key = self.get_api_key()
+        self.api_key = settings.API_KEY
         self.url = f"https://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={self.api_key}&units=metric"
-
-    def get_api_key(self):
-        with open("secret.json", "r") as secret_file:
-            api_key = json.load(secret_file)["Key"]
-        return api_key
 
     def city_exist(self):
         try:
