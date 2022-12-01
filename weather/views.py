@@ -1,8 +1,7 @@
 import requests
 import json
 
-# from django.views.generic import CreateView, DeleteView
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DeleteView
 from django.urls import reverse
 
 from .models import City
@@ -56,8 +55,13 @@ class ListCreateCityView(CreateView):
         return super().form_valid(form)
 
 
-# class DeleteCity(DeleteView):
-#     model = City
+class DeleteCity(DeleteView):
+    model = City
+    slug_field = "name"
+    slug_url_kwarg = "city_name"
 
-#     def get_success_url(self):
-#         return reverse("index")
+    def get_success_url(self):
+        return reverse("index")
+
+    def get(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)
