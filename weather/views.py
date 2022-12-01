@@ -9,7 +9,7 @@ from .models import City
 from .forms import CityModelForm
 
 
-class CityWeatherData:
+class Weather:
     def __init__(self, city_name):
         self.city_name = city_name
         self.api_key = settings.API_KEY
@@ -28,7 +28,7 @@ class CityWeatherData:
         response = requests.get(self.url)
         return response.json()
 
-    def get_data(self):
+    def get_weather_data(self):
         try:
             data = self.get_json_data()
             return {
@@ -56,7 +56,7 @@ class ListCreateCityView(CreateView):
         context = super().get_context_data(**kwargs)
         weather_data = []
         for city in self.get_queryset():
-            weather_data.append(CityWeatherData(city.name).get_data())
+            weather_data.append(Weather(city.name).get_weather_data())
 
         context["weather_data"] = weather_data
         return context
@@ -68,7 +68,7 @@ class ListCreateCityView(CreateView):
         city_name = form.cleaned_data["name"]
 
         try:
-            CityWeatherData(city_name).city_exist()
+            Weather(city_name).city_exist()
             return super().form_valid(form)
         except Exception as err:
             form.add_error("name", err)
