@@ -1,6 +1,5 @@
 import requests
 from requests.exceptions import ConnectionError
-import json
 
 from django.views.generic import CreateView, DeleteView
 from django.urls import reverse
