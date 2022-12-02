@@ -12,11 +12,27 @@ class ListCreateCityView(CreateView):
     form_class = CityModelForm
     template_name = "weather/weather.html"
 
+    def get_city_weather_data(self, city_name):
+        try:
+            data = WeatherData(city_name).get_data()
+            return {
+                "city": city_name,
+                "temperature": data["main"]["temp"],
+                "description": data["weather"][0]["description"],
+                "icon": data["weather"][0]["icon"],
+            }
+        except Exception as err:
+            return {
+                "city": city_name,
+                "temperature": 0,
+                "description": err,
+            }
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         weather_data = []
         for city in self.get_queryset():
-            weather_data.append(WeatherData(city.name).get_weather_data())
+            weather_data.append(self.get_city_weather_data(city.name))
 
         context["weather_data"] = weather_data
         return context
@@ -28,7 +44,7 @@ class ListCreateCityView(CreateView):
         city_name = form.cleaned_data["name"]
 
         try:
-            WeatherData(city_name).city_exist()
+            WeatherData(city_name).get_data()
             return super().form_valid(form)
         except Exception as err:
             form.add_error("name", err)
