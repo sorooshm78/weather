@@ -139,3 +139,16 @@ def get_secret(setting):
 
 
 API_KEY = get_secret("Key")
+
+# Cash setting
+CACHE_TTL = 60 * 1
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+    }
+}
+
+# Thread Worker
+MAX_THREAD_WORKERS = 10
