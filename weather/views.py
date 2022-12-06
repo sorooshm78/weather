@@ -19,27 +19,24 @@ class ListCreateCityView(CreateView):
         self.MAX_THREAD_WORKERS = settings.MAX_THREAD_WORKERS
         self.CACHE_TTL = settings.CACHE_TTL
 
-    def get_represent_data(self, city_name, data):
-        return {
+    def prepare_data(self, city_name):
+        data = WeatherData(city_name).get_data()
+        city_weather_data = {
             "city": city_name,
             "temperature": data["main"]["temp"],
             "description": data["weather"][0]["description"],
             "icon": data["weather"][0]["icon"],
         }
-
-    def set_and_get_data_from_cache(self, city_name):
-        request_data = WeatherData(city_name).get_data()
-        city_weather_data = self.get_represent_data(city_name, request_data)
         cache.set(city_name, city_weather_data, self.CACHE_TTL)
         return city_weather_data
 
     def get_city_weather_data(self, city_name):
         try:
-            data_from_cache = cache.get(city_name)
-            if data_from_cache is not None:
-                return data_from_cache
+            cache_city_weather_data = cache.get(city_name)
+            if cache_city_weather_data is not None:
+                return cache_city_weather_data
 
-            return self.set_and_get_data_from_cache(city_name)
+            return self.prepare_data(city_name)
 
         except Exception as err:
             return {
@@ -69,7 +66,7 @@ class ListCreateCityView(CreateView):
         city_name = form.cleaned_data["name"]
 
         try:
-            self.set_and_get_data_from_cache(city_name)
+            self.prepare_data(city_name)
             return super().form_valid(form)
         except Exception as err:
             form.add_error("name", err)
