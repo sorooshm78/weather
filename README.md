@@ -14,12 +14,6 @@ go to [OpenWeatherMap](https://openweathermap.org) website and create account an
 so rename sample_secret.json to secret.json and copy your API Key into file 
 ```
 {
-    "Key": "test"
-}
-```
-to 
-```
-{
     "Key": "Your API KEY"
 }
 ```
@@ -38,6 +32,34 @@ Now, to apply this migrations run the following command
 ```
 python manage.py migrate
 ```
+
+### Setup Redis Cache 
+Install Redis on Linux 
+```
+sudo apt-get update
+sudo apt-get install redis
+```
+Run the Redis server from a new terminal window.
+```
+redis-server
+```
+and you can change redis configurations in core/settings.py
+```
+# Cash setting
+CACHE_TTL = 60 * 15
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+    }
+}
+```
+
+by default cached for 15 minutes and you change timeout cache
+```
+CACHE_TTL = 60 * 15 # second
+```
+
 
 ### Running the code 
 Just go into the code directory and type 
