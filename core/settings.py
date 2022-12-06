@@ -141,8 +141,7 @@ def get_secret(setting):
 API_KEY = get_secret("Key")
 
 # Cash setting
-CACHE_TTL = 60 * 1
-
+CACHE_TTL = 60 * 15
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
