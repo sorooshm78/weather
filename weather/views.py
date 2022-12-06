@@ -34,11 +34,11 @@ class ListCreateCityView(CreateView):
         return city_weather_data
 
     def get_city_weather_data(self, city_name):
-        data_from_cache = cache.get(city_name)
-        if data_from_cache is not None:
-            return data_from_cache
-
         try:
+            data_from_cache = cache.get(city_name)
+            if data_from_cache is not None:
+                return data_from_cache
+
             return self.set_and_get_data_from_cache(city_name)
 
         except Exception as err:
@@ -86,8 +86,3 @@ class DeleteCity(DeleteView):
 
     def get(self, request, *args, **kwargs):
         return self.delete(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        city_name = kwargs["city_name"]
-        cache.delete(city_name)
-        return super().delete(request)
